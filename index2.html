@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="./bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-database.js"></script>
+<style>
+    /* Style The Dropdown Button */
+    .dropbtn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      
+    }
+    
+    /* The container <div> - needed to position the dropdown content */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 50px;
+    }
+    
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f9f9f9;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      
+    }
+    
+    /* Links inside the dropdown */
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+    
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {background-color: #f1f1f1}
+    
+    /* Show the dropdown menu on hover */
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+    
+    /* Change the background color of the dropdown button when the dropdown content is shown */
+    .dropdown:hover .dropbtn {
+      background-color: #3e8e41;
+    }
+    </style>
+
+    <title>Facualty</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Faculty Collection</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+      
+          <div class="collapse navbar-collapse" id="navbarColor02">
+            <ul class="navbar-nav me-auto">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">Home
+                  <span class="visually-hidden">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Pricing</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">About</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+              </li>
+            </ul>
+            <form class="d-flex">
+              <input class="form-control me-sm-2" type="text" placeholder="Search">
+              <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="container">
+        <div class="form-group">
+            <label for="sID" class="form-label mt-4">ID</label>
+            <input type="text" class="form-control" id="sID" readonly="readonly">
+        </div>
+        <div class="form-group">
+            <label for="studentName" class="form-label mt-4">studentName</label>
+            <input type="text" class="form-control" id="studentName" placeholder="What do you think?">
+        </div>
+        <div class="form-group">
+            <label for="lastName" class="form-label mt-4">studentLastName</label>
+            <input type="text" class="form-control" id="lastName" placeholder="What do you think?">
+        </div>
+        
+        <div class="form-group">
+            <label for="age" class="form-label mt-4">age</label>
+            <input type="number" class="form-control" id="age" placeholder="What do you think?">
+        </div>
+        <div class="form-group">
+            <label for="Facultyname" class="form-label mt-4">Faculty</label>
+           
+            
+        </div>
+        <label for="faculties">Choose a facualty:</label>
+    <select name="faculties" id="faculties" >
+        
+</select>
+        <br>
+        <button style="float:right; width: 100%;" type="button" class="btn btn-outline-success" onclick="AddPost()">Save</button>
+        <br><br><br><br>
+        <table class="table table-hover" id="Allstudents">
+            <thead>
+                <tr>
+                    <th scope="col">F.Name</th>
+                    <th scope="col">l.name</th>
+                    <th scope="col">age</th>
+                    <th scope="col">faculty name</th>
+                   
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+      </div>
+      <script src="./config.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var Ndatabase = config.firebaseConfig
+      
+        // Initialize Firebase
+        firebase.initializeApp(Ndatabase);
+            var database = firebase.database();
+
+            database.ref('/students').on('value',(snapshot)=>{
+                DisplayFac(snapshot.val())
+            })
+            database.ref('/faculty').on('value',(snapshot)=>{
+                console.log(snapshot.val())
+                Displaydrop(snapshot.val())
+                function Displaydrop(data){
+                $("#faculties").empty();
+                for(var item in data){
+                    var row = `
+                              <option value="${data[item].text}" > ${data[item].text}</option>
+                        
+                            
+                          
+                    `;
+                    $("#faculties").append(row);
+
+                }
+            }
+            
+            
+            })
+      
+                
+            
+            function AddPost(){
+                
+               
+                var id = $("#sID").val();
+                var fname = $("#studentName").val();
+                var lName = $("#lastName").val();
+                var age = $("#age").val();
+                var facName =$("#faculties").val() ;
+              
+                var data = {fname:fname,lName:lName,age:age,facName:facName};
+                console.log(data);
+            
+               
+
+                if(id == ""){ //if add
+                    database.ref().child('students').push(data);
+                }
+
+                else{ //if update
+                   var updates = {};
+                   updates["/students/"+id]=data;
+                   database.ref().update(updates);
+                }
+
+                Clear();
+            }
+            
+         
+      
+            function DisplayFac(data){
+                $("#Allstudents>tbody").empty();
+                for(var item in data){
+                    var row = `<tr>
+                            <td>${item}</td>
+                            <td>${data[item].fname}</td>
+                            <td>${data[item].lName}</td>
+                            <td>${data[item].age}</td>
+                            <td>${data[item].facName}</td>
+                            
+                            <td>
+                                <button type="button" class="btn btn-outline-warning" onclick="GetPostbyID('${item}')">Update</button>
+                                <button type="button" class="btn btn-outline-danger" onclick="DeletePost('${item}')">Delete</button>
+                            </td>
+                        </tr>`;
+                    $("#Allstudents>tbody").append(row);
+                }
+            }
+      
+            function GetPostbyID(PostID){
+                database.ref().child("students").child(PostID).get().then((snapshot)=>{
+                    var data = snapshot.val();
+                    $("#sID").val(PostID);
+                    $("#studentName").val(data.fname);
+                    $("#age").val(data.age);
+                    $("#lastName").val(data.lName);
+                    
+                   
+                })
+            }
+
+            function Clear(){
+                $("#sID").val("");
+                $("#studentName").val("");
+                $("#lastName").val("");
+                $("#age").val("");
+             
+            }
+      
+            function DeletePost(PostID){
+                var sure = confirm("Are tou sure?");
+                if(sure){
+                   var updates = {};
+                   updates["/students/"+PostID] = null;
+                   database.ref().update(updates);
+                } 
+            }
+      </script>
+</body>
+</html>
